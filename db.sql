@@ -47,6 +47,19 @@ INSERT INTO `products` (`code`, `name`, `price`, `gst`) VALUES
 ALTER TABLE `products`
   ADD PRIMARY KEY (`code`);
 
+
+CREATE TABLE `products` (
+  `name` varchar(100),
+  `password` varchar(100),
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `products`
+--
+INSERT INTO `login` (`name`,`password`) VALUES
+('xxxxx', 'qwerty'),
+('yyyyy','ytrewq');
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
