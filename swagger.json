@@ -1,0 +1,303 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"UserResponseModel": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"name"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"User": {
+				"description": "User objects allow you to associate actions performed\r\nin the system with the user that performed them.\r\nThe User object contains common information across\r\nevery user in the system regardless of status and role.",
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"email": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"Happy",
+							"Sad"
+						]
+					},
+					"phoneNumbers": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"email",
+					"name",
+					"phoneNumbers"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ValidateErrorJSON": {
+				"properties": {
+					"message": {
+						"type": "string",
+						"enum": [
+							"Validation failed"
+						],
+						"nullable": false
+					},
+					"details": {
+						"properties": {
+							"reason": {
+								"type": "string",
+								"enum": [
+									"failed"
+								],
+								"nullable": false
+							}
+						},
+						"required": [
+							"reason"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"message",
+					"details"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"InternalError": {
+				"properties": {
+					"message": {
+						"type": "string",
+						"enum": [
+							"InternalError"
+						],
+						"nullable": false
+					},
+					"details": {
+						"properties": {},
+						"additionalProperties": {},
+						"type": "object"
+					}
+				},
+				"required": [
+					"message",
+					"details"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Pick_User.email-or-name-or-phoneNumbers_": {
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"phoneNumbers": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"email",
+					"name",
+					"phoneNumbers"
+				],
+				"type": "object",
+				"description": "From T, pick a set of properties whose keys are in the union K"
+			},
+			"UserCreationParams": {
+				"$ref": "#/components/schemas/Pick_User.email-or-name-or-phoneNumbers_"
+			}
+		},
+		"securitySchemes": {
+			"api_key": {
+				"type": "apiKey",
+				"name": "access_token",
+				"in": "header",
+				"required": true,
+				"typeName": "string"
+			}
+		}
+	},
+	"info": {
+		"title": "crud",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/MiddlewareTestExpress/test1": {
+			"get": {
+				"operationId": "Test1",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/users/UserInfo": {
+			"get": {
+				"operationId": "UserInfo",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UserResponseModel"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/users/UserInfo/{userId}": {
+			"get": {
+				"operationId": "GetUser",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"id": 100,
+											"name": "tsoa user",
+											"email": "hello@tsoa.com",
+											"phoneNumbers": [],
+											"status": "Happy"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves the details of an existing user.\r\nSupply the unique user ID from either and receive corresponding user details.",
+				"summary": "A concise summary.",
+				"security": [
+					{
+						"api_key": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "The user's identifier",
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						},
+						"example": 33
+					},
+					{
+						"description": "Provide a username to display",
+						"in": "query",
+						"name": "name",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/users": {
+			"post": {
+				"operationId": "CreateUser",
+				"responses": {
+					"201": {
+						"description": "Created"
+					},
+					"422": {
+						"description": "Validation Failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ValidateErrorJSON"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internel server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/InternalError"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserCreationParams"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}
